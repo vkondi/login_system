@@ -1,4 +1,4 @@
-# My Application
+# Login System
 
 ## Table of Contents
 - [Introduction](#introduction)
@@ -11,7 +11,7 @@
 - [License](#license)
 
 ## Introduction
-My Application is a web application with a client-server architecture. The `client` folder contains the front-end code built with React, and the `server` folder contains the back-end code built with Node.js and Express.
+Login System is a web application with a client-server architecture. The `client` folder contains the front-end code built with React, and the `server` folder contains the back-end code built with Node.js and Express.
 
 
 ## Prerequisites
