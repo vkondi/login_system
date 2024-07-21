@@ -6,7 +6,8 @@ const tables = [
     definition: `CREATE TABLE accounts (
       USER_ID SERIAL PRIMARY KEY,
       USERNAME VARCHAR(50) UNIQUE NOT NULL,
-      PASSWORD VARCHAR(50) UNIQUE NOT NULL
+      PASSWORD VARCHAR(50) UNIQUE NOT NULL,
+      NAME VARCHAR(50) UNIQUE NOT NULL
     );`,
   },
   // Add more tables if needed
