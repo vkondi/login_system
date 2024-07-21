@@ -1,15 +1,46 @@
 import React, { useState } from "react";
-import { TextField, Button, Container, Typography, Box } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Container,
+  Typography,
+  Box,
+  Snackbar,
+} from "@mui/material";
+import axios from "../services/axiosConfig";
 
 const Register = () => {
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Handle form submission, e.g., send data to backend
-    console.log({ username, password, fullName });
+
+    const response = await axios.post("/user/register", {
+      username,
+      password,
+      name: fullName,
+    });
+
+    if (response.data.message === "success") {
+      setMessage("User registered successfully");
+      setOpen(true);
+    } else {
+      setMessage(response.data?.error ?? "Failed to register user");
+      setOpen(true);
+    }
+  };
+
+  const handleClose = (_, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
   };
 
   return (
@@ -18,6 +49,14 @@ const Register = () => {
         Register
       </Typography>
       <Box component="form" onSubmit={handleSubmit}>
+        <TextField
+          label="Full Name"
+          variant="outlined"
+          margin="normal"
+          fullWidth
+          value={fullName}
+          onChange={(e) => setFullName(e.target.value)}
+        />
         <TextField
           label="Username"
           variant="outlined"
@@ -35,18 +74,17 @@ const Register = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <TextField
-          label="Full Name"
-          variant="outlined"
-          margin="normal"
-          fullWidth
-          value={fullName}
-          onChange={(e) => setFullName(e.target.value)}
-        />
+
         <Button type="submit" fullWidth variant="contained" color="primary">
           Submit
         </Button>
       </Box>
+      <Snackbar
+        open={open}
+        autoHideDuration={5000}
+        onClose={handleClose}
+        message={message}
+      />
     </Container>
   );
 };

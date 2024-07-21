@@ -1,25 +1,24 @@
-import React, { useState } from 'react';
-import {
-  Box,
-  TextField,
-  Button,
-  Typography,
-  Link,
-} from '@mui/material';
+import React, { useState } from "react";
+import { Box, TextField, Button, Typography, Link } from "@mui/material";
 
 const Login = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle login logic here
-    console.log('Username:', username);
-    console.log('Password:', password);
+    console.log("Username:", username);
+    console.log("Password:", password);
   };
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      height="100vh"
+    >
       <Box p={4} border={1} borderRadius={2}>
         <Typography variant="h4" align="center" gutterBottom>
           Login
@@ -47,7 +46,7 @@ const Login = () => {
           </Button>
         </form>
         <Typography align="center" mt={2}>
-          Don't have an account? <Link href="#">Register</Link>
+          Don't have an account? <Link href="/register">Register</Link>
         </Typography>
       </Box>
     </Box>
