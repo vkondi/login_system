@@ -1,9 +1,9 @@
-const pool = require("./database");
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const { initializeDatabase, pool } = require("./db/database");
 
 const app = express();
-
 const PORT = 4000;
 
 app.use(express.json());
@@ -15,9 +15,9 @@ app.post("/adduser", (req, res) => {
   const username = req.body?.username;
   const password = req.body?.password;
 
-  const insertStmt = `INSERT INTO accounts ( username, password ) VALUES ( '${username}', '${password}' );`;
+  const insertStmt = `INSERT INTO accounts (username, password) VALUES ($1, $2);`;
   pool
-    .query(insertStmt)
+    .query(insertStmt, [username, password])
     .then((response) => {
       console.log("Data saved");
       console.log(response);
@@ -31,4 +31,8 @@ app.post("/adduser", (req, res) => {
     });
 });
 
-app.listen(PORT, () => console.log(`SERVER ON localhost:${PORT}`));
+initializeDatabase().then(() => {
+  app.listen(PORT, () => {
+    console.log(`SERVER STARTED on localhost:${PORT}`);
+  });
+});
