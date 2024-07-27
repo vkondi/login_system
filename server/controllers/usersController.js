@@ -3,6 +3,7 @@
  */
 
 const { pool } = require("../db/database");
+const CONSTANTS = require("../utils/Constants");
 
 const registerUser = async (req, res) => {
   const username = req.body?.username;
@@ -29,7 +30,7 @@ const registerUser = async (req, res) => {
       .then((response) => {
         res
           .status(200)
-          .json({ message: "success", data: JSON.stringify(response) });
+          .json({ status: CONSTANTS.SUCCESS_STATUS, message: "success" });
       })
       .catch((err) => {
         console.log(err);

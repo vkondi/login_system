@@ -7,9 +7,17 @@ import {
   Box,
   Snackbar,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+
 import axios from "../services/axiosConfig";
+import { showLoader, hideLoader } from "../redux/reducers/authReducer";
+import { REGISTER_URL, LOGIN_ROUTE } from "../utils/Paths";
 
 const Register = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState();
 
@@ -20,18 +28,29 @@ const Register = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const response = await axios.post("/user/register", {
-      username,
-      password,
-      name: fullName,
-    });
+    try {
+      dispatch(showLoader());
 
-    if (response.data.message === "success") {
-      setMessage("User registered successfully");
-      setOpen(true);
-    } else {
-      setMessage(response.data?.error ?? "Failed to register user");
-      setOpen(true);
+      const response = await axios.post(REGISTER_URL, {
+        username,
+        password,
+        name: fullName,
+      });
+
+      dispatch(hideLoader());
+
+      if (response.data.status === "success") {
+        setMessage("User registered successfully");
+        setOpen(true);
+
+        navigate(LOGIN_ROUTE);
+      } else {
+        setMessage(response.data?.error ?? "Failed to register user");
+        setOpen(true);
+      }
+    } catch (error) {
+      console.error(error);
+      dispatch(hideLoader());
     }
   };
 

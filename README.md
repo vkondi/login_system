@@ -23,3 +23,8 @@ Login System is a web application with a client-server architecture. The `client
 ```bash
 git clone https://github.com/vkondi/login_system.git
 cd login_system
+```
+
+## TODO's
+### Server
+- Hot module reload
