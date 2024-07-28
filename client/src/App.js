@@ -1,27 +1,71 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingOverlay from "react-loading-overlay";
 
-import { logout } from "./redux/reducers/authReducer";
+import {
+  logout,
+  setUserDetails,
+  showLoader,
+  hideLoader,
+} from "./redux/reducers/authReducer";
+import { LS_USERNAME_KEY } from "./utils/Constants";
+import { GET_USER_DETAILS_URL } from "./utils/Paths";
+import axios from "./services/axiosConfig";
 
-import ProtectedRoute from "./components/ProtectedRoute";
+import Header from "./components/common/Header";
+import ProtectedRoute from "./components/routes/ProtectedRoute";
 import WelcomePage from "./pages/WelcomePage";
 import Login from "./pages/LoginPage";
 import Register from "./pages/Register";
 
 const App = () => {
-  const loading = useSelector((state) => state.auth.loading);
+  const loggedInUser = localStorage.getItem(LS_USERNAME_KEY);
+
+  const { loading, authenticated, username } = useSelector(
+    (state) => state.auth
+  );
   const dispatch = useDispatch();
 
+  const fetchUserDetails = useCallback(
+    async (loggedInUser) => {
+      if (!loggedInUser) return;
+
+      dispatch(showLoader());
+
+      const response = await axios.post(GET_USER_DETAILS_URL, {
+        username: loggedInUser,
+      });
+
+      dispatch(hideLoader());
+
+      if (response.data.status === "success") {
+        dispatch(
+          setUserDetails({
+            username: response.data.data?.username,
+            name: response.data.data?.name,
+          })
+        );
+      }
+    },
+    [dispatch]
+  );
+
   useEffect(() => {
-    const loggedInUser = localStorage.getItem("username");
     if (!loggedInUser) dispatch(logout());
-  }, [dispatch]);
+  }, [dispatch, loggedInUser]);
+
+  // Fetch user details once logged in
+  useEffect(() => {
+    if (authenticated && !username) {
+      fetchUserDetails(loggedInUser);
+    }
+  }, [authenticated, fetchUserDetails, username, loggedInUser]);
 
   return (
     <LoadingOverlay active={loading} spinner text="Loading...">
       <Router>
+        <Header />
         <Routes>
           <Route
             path="/"

@@ -1,18 +1,12 @@
 import React, { useState } from "react";
-import {
-  Box,
-  TextField,
-  Button,
-  Typography,
-  Link,
-  Snackbar,
-} from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Box, TextField, Button, Typography, Snackbar } from "@mui/material";
+import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 import axios from "../services/axiosConfig";
 import { login, showLoader, hideLoader } from "../redux/reducers/authReducer";
-import { LOGIN_URL, HOME_ROUTE } from "../utils/Paths";
+import { LOGIN_URL, HOME_ROUTE, REGISER_ROUTE } from "../utils/Paths";
+import { LS_USERNAME_KEY } from "../utils/Constants";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -40,18 +34,9 @@ const Login = () => {
       setMessage("Login success");
       setOpen(true);
 
-      const respUsername = response.data.data.username;
-      const respName = response.data.data.name;
+      localStorage.setItem(LS_USERNAME_KEY, username);
 
-      localStorage.setItem("username", respUsername);
-      localStorage.setItem("name", respName);
-
-      dispatch(
-        login({
-          username: respUsername,
-          name: respName,
-        })
-      );
+      dispatch(login());
 
       navigate(HOME_ROUTE);
     } else {
@@ -102,7 +87,7 @@ const Login = () => {
           </Button>
         </form>
         <Typography align="center" mt={2}>
-          Don't have an account? <Link href="/register">Register</Link>
+          Don't have an account? <Link to={REGISER_ROUTE}>Register</Link>
         </Typography>
       </Box>
 

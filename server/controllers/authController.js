@@ -25,8 +25,7 @@ const login = async (req, res) => {
     if (record?.password === password) {
       res.status(200).json({
         status: CONSTANTS.SUCCESS_STATUS,
-        message: "success",
-        data: { name: record?.name, username: record?.username },
+        message: "success"
       });
     } else {
       res.status(200).json({

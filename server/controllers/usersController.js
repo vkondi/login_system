@@ -4,6 +4,7 @@
 
 const { pool } = require("../db/database");
 const CONSTANTS = require("../utils/Constants");
+const { sleep } = require("../utils/utils");
 
 const registerUser = async (req, res) => {
   const username = req.body?.username;
@@ -44,6 +45,32 @@ const registerUser = async (req, res) => {
   }
 };
 
+const getUserDetails = async (req, res) => {
+  const username = req.body?.username;
+
+  // Check record with username
+  const userRecord = await pool.query(
+    "SELECT * from accounts where username=$1",
+    [username]
+  );
+
+  if (userRecord.rowCount) {
+    const record = userRecord.rows?.[0];
+
+    res.status(200).json({
+      status: CONSTANTS.SUCCESS_STATUS,
+      message: "success",
+      data: { name: record?.name, username: record?.username },
+    });
+  } else {
+    res.status(200).json({
+      status: CONSTANTS.FAILURE_STATUS,
+      message: "Failed to find user with the given username",
+    });
+  }
+};
+
 module.exports = {
   registerUser,
+  getUserDetails,
 };

@@ -26,6 +26,7 @@ export default function WelcomePage() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            height:"100vh"
           }}
         >
           <Typography
