@@ -4,9 +4,11 @@
 
 const { pool } = require("../db/database");
 const CONSTANTS = require("../utils/Constants");
-const { sleep } = require("../utils/utils");
+const logger = require("../utils/logger");
 
 const registerUser = async (req, res) => {
+  logger.info("[userController] >> [registerUser]");
+
   const username = req.body?.username;
   const password = req.body?.password;
   const name = req.body?.name;
@@ -46,6 +48,8 @@ const registerUser = async (req, res) => {
 };
 
 const getUserDetails = async (req, res) => {
+  logger.info("[userController] >> [getUserDetails]");
+
   const username = req.body?.username;
 
   // Check record with username

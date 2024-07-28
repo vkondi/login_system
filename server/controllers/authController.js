@@ -5,8 +5,11 @@
 const { pool } = require("../db/database");
 const CONSTANTS = require("../utils/Constants");
 const { sleep } = require("../utils/utils");
+const logger = require("../utils/logger");
 
 const login = async (req, res) => {
+  logger.info("[authController] >> [login]");
+  
   const username = req.body?.username;
   const password = req.body?.password;
 
