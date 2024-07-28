@@ -1,4 +1,5 @@
 const { Pool } = require("pg");
+const logger = require("../utils/logger");
 
 const tables = [
   {
@@ -37,15 +38,15 @@ async function initializeDatabase() {
 
       if (tableCheckResult.rowCount === 0) {
         await pool.query(table.definition);
-        console.log(`Table ${table.name} created.`);
+        logger.info(`Table ${table.name} created.`);
       } else {
-        console.log(`Table ${table.name} already exists.`);
+        logger.info(`Table ${table.name} already exists.`);
       }
     }
 
-    console.log("Database and table initialized successfully");
+    logger.info("Database and table initialized successfully");
   } catch (err) {
-    console.error("Error initializing database:", err);
+    logger.error("Error initializing database:", err);
   }
 
   return pool;

@@ -1,9 +1,9 @@
 // API URL's
 export const LOGIN_URL = "/auth/login";
-export const REGISTER_URL = "/user/register";
-export const GET_USER_DETAILS_URL = "/user/details";
+export const REGISTER_URL = "/users";
+export const GET_USER_URL = "/users";
 
 // Routes
 export const LOGIN_ROUTE = "/login";
-export const HOME_ROUTE = '/';
-export const REGISER_ROUTE = '/register';
+export const HOME_ROUTE = "/";
+export const REGISER_ROUTE = "/register";

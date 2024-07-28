@@ -6,8 +6,8 @@ const { pool } = require("../db/database");
 const CONSTANTS = require("../utils/Constants");
 const logger = require("../utils/logger");
 
-const registerUser = async (req, res) => {
-  logger.info("[userController] >> [registerUser]");
+const createUser = async (req, res) => {
+  logger.info("[userController] >> [createUser]");
 
   const username = req.body?.username;
   const password = req.body?.password;
@@ -15,11 +15,11 @@ const registerUser = async (req, res) => {
 
   if (username && password && name) {
     // Check for existing user with same username
-    const existingUsername = await pool.query(
+    const { rowCount } = await pool.query(
       "SELECT * from accounts where username=$1",
       [username]
     );
-    if (existingUsername.rows.length) {
+    if (rowCount) {
       return res.status(200).json({
         message: "error",
         error: "Record with the username already exists",
@@ -30,7 +30,7 @@ const registerUser = async (req, res) => {
     const insertStmt = `INSERT INTO accounts (username, password, name) VALUES ($1, $2, $3);`;
     pool
       .query(insertStmt, [username, password, name])
-      .then((response) => {
+      .then(() => {
         res
           .status(200)
           .json({ status: CONSTANTS.SUCCESS_STATUS, message: "success" });
@@ -47,19 +47,19 @@ const registerUser = async (req, res) => {
   }
 };
 
-const getUserDetails = async (req, res) => {
-  logger.info("[userController] >> [getUserDetails]");
+const getUserById = async (req, res) => {
+  logger.info("[userController] >> [getUserById]");
 
-  const username = req.body?.username;
+  const username = req.params?.username;
 
   // Check record with username
-  const userRecord = await pool.query(
+  const { rowCount, rows } = await pool.query(
     "SELECT * from accounts where username=$1",
     [username]
   );
 
-  if (userRecord.rowCount) {
-    const record = userRecord.rows?.[0];
+  if (rowCount) {
+    const record = rows?.[0];
 
     res.status(200).json({
       status: CONSTANTS.SUCCESS_STATUS,
@@ -74,7 +74,88 @@ const getUserDetails = async (req, res) => {
   }
 };
 
+const getAllUsers = async (req, res) => {
+  logger.info("[userController] >> [getAllUsers]");
+
+  // Check record with username
+  const { rowCount, rows } = await pool.query("SELECT * from accounts");
+
+  if (rowCount) {
+    const record = rows?.[0];
+
+    res.status(200).json({
+      status: CONSTANTS.SUCCESS_STATUS,
+      message: "success",
+      data: rows.map((rec) => ({ name: rec?.name, username: rec?.username })),
+    });
+  } else {
+    res.status(200).json({
+      status: CONSTANTS.FAILURE_STATUS,
+      message: "Failed to find user with the given username",
+    });
+  }
+};
+
+const deleteUser = async (req, res) => {
+  logger.info("[userController] >> [deleteUser]");
+
+  const username = req.params?.username;
+
+  // Check record with username
+  const { rowCount, rows } = await pool.query(
+    "DELETE from accounts where username=$1",
+    [username]
+  );
+
+  if (rowCount) {
+    res.status(200).json({
+      status: CONSTANTS.SUCCESS_STATUS,
+      message: `User \'${username}\' deleted successfully`,
+    });
+  } else {
+    res.status(200).json({
+      status: CONSTANTS.FAILURE_STATUS,
+      message: `User \'${username}\' does not exist`,
+    });
+  }
+};
+
+const updateUser = async (req, res) => {
+  logger.info("[userController] >> [updateUser]");
+
+  const username = req.params?.username;
+  const name = req.body?.name;
+
+  if (username && name) {
+    // Check for existing user with same username
+    const { rowCount } = await pool.query(
+      "UPDATE accounts SET name=$1 where username=$2",
+      [name, username]
+    );
+
+    if (rowCount) {
+      res.status(200).json({
+        status: CONSTANTS.SUCCESS_STATUS,
+        message: `User \'${username}\' updated successfully`,
+      });
+    } else {
+      res.status(200).json({
+        status: CONSTANTS.FAILURE_STATUS,
+        message: `User \'${username}\' not found`,
+      });
+    }
+  } else {
+    res.status(200).json({
+      message: "error",
+      error: "Name is missing",
+    });
+  }
+};
+
 module.exports = {
-  registerUser,
-  getUserDetails,
+  createUser,
+  getUserById,
+  getAllUsers,
+  deleteUser,
+  updateUser,
 };

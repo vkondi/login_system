@@ -10,7 +10,7 @@ import {
   hideLoader,
 } from "./redux/reducers/authReducer";
 import { LS_USERNAME_KEY } from "./utils/Constants";
-import { GET_USER_DETAILS_URL } from "./utils/Paths";
+import { GET_USER_URL } from "./utils/Paths";
 import axios from "./services/axiosConfig";
 
 import Header from "./components/common/Header";
@@ -33,9 +33,7 @@ const App = () => {
 
       dispatch(showLoader());
 
-      const response = await axios.post(GET_USER_DETAILS_URL, {
-        username: loggedInUser,
-      });
+      const response = await axios.get(`${GET_USER_URL}/${loggedInUser}`);
 
       dispatch(hideLoader());
 
