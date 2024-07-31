@@ -18,6 +18,7 @@ import ProtectedRoute from "./components/routes/ProtectedRoute";
 import WelcomePage from "./pages/WelcomePage";
 import Login from "./pages/LoginPage";
 import Register from "./pages/Register";
+import useUsers from "./hooks/useUsers";
 
 const App = () => {
   const loggedInUser = localStorage.getItem(LS_USERNAME_KEY);
@@ -26,6 +27,7 @@ const App = () => {
     (state) => state.auth
   );
   const dispatch = useDispatch();
+  const { users } = useUsers();
 
   const fetchUserDetails = useCallback(
     async (loggedInUser) => {
