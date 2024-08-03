@@ -1,4 +1,5 @@
 import axios from "axios";
+import { setupCache } from "axios-cache-interceptor";
 
 const instance = axios.create({
   baseURL: "http://localhost:4000",
@@ -34,4 +35,4 @@ instance.defaults.headers.post["Content-Type"] = "application/json";
 //   }
 // );
 
-export default instance;
+export default setupCache(instance);
